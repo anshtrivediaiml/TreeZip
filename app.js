@@ -1,4 +1,4 @@
-const { useState, useEffect } = React;
+const { useState } = React;
 
 // Lucide Icons as SVG components
 const FolderTree = ({ className }) => (
@@ -42,7 +42,28 @@ const Zap = ({ className }) => (
     </svg>
 );
 
+const Sun = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2"></path>
+        <path d="M12 20v2"></path>
+        <path d="m4.93 4.93 1.41 1.41"></path>
+        <path d="m17.66 17.66 1.41 1.41"></path>
+        <path d="M2 12h2"></path>
+        <path d="M20 12h2"></path>
+        <path d="m6.34 17.66-1.41 1.41"></path>
+        <path d="m19.07 4.93-1.41 1.41"></path>
+    </svg>
+);
+
+const Moon = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+    </svg>
+);
+
 const App = () => {
+    const [darkMode, setDarkMode] = useState(false);
     const [input, setInput] = useState(`├── public/
 │   └── vite.svg
 ├── src/
@@ -194,18 +215,26 @@ const App = () => {
     const renderTree = (nodes, depth = 0) => {
         return nodes.map((node, idx) => (
             <div key={idx} style={{ marginLeft: `${depth * 20}px` }} className="py-1 group">
-                <div className="flex items-center gap-2 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent rounded px-2 py-1 transition-all">
+                <div className={`flex items-center gap-2 rounded px-2 py-1 transition-all ${
+                    darkMode 
+                        ? 'hover:bg-purple-900/30' 
+                        : 'hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent'
+                }`}>
                     {node.type === 'folder' ? (
-                        <FolderTree className="w-4 h-4 text-purple-600" />
+                        <FolderTree className={`w-4 h-4 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
                     ) : (
-                        <FileText className="w-4 h-4 text-blue-500" />
+                        <FileText className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-blue-500'}`} />
                     )}
-                    <span className={node.type === 'folder' ? 'font-semibold text-purple-700' : 'text-gray-700'}>
+                    <span className={`${
+                        node.type === 'folder' 
+                            ? darkMode ? 'font-semibold text-purple-300' : 'font-semibold text-purple-700'
+                            : darkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
                         {node.name}{node.type === 'folder' ? '/' : ''}
                     </span>
                 </div>
                 {node.children.length > 0 && (
-                    <div className="tree-line">
+                    <div className={`tree-line ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                         {renderTree(node.children, depth + 1)}
                     </div>
                 )}
@@ -214,67 +243,128 @@ const App = () => {
     };
 
     return (
-        <div className="min-h-screen gradient-bg">
+        <div className={`min-h-screen transition-colors duration-300 ${
+            darkMode 
+                ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' 
+                : 'gradient-bg'
+        }`}>
             {/* Floating decoration elements */}
-            <div className="fixed top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-            <div className="fixed top-40 right-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-            <div className="fixed bottom-20 left-1/2 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-2000"></div>
+            <div className={`fixed top-20 left-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse ${
+                darkMode ? 'bg-purple-500' : 'bg-purple-300'
+            }`}></div>
+            <div className={`fixed top-40 right-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse ${
+                darkMode ? 'bg-blue-500' : 'bg-blue-300'
+            }`} style={{ animationDelay: '1s' }}></div>
+            <div className={`fixed bottom-20 left-1/2 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse ${
+                darkMode ? 'bg-pink-500' : 'bg-pink-300'
+            }`} style={{ animationDelay: '2s' }}></div>
 
             <div className="relative min-h-screen p-4 sm:p-6 lg:p-8">
                 <div className="max-w-7xl mx-auto">
+                    {/* Dark Mode Toggle Button */}
+                    <div className="absolute top-4 right-4 z-50">
+                        <button
+                            onClick={() => setDarkMode(!darkMode)}
+                            className={`p-3 rounded-full transition-all transform hover:scale-110 active:scale-95 shadow-lg ${
+                                darkMode 
+                                    ? 'bg-gray-800 text-yellow-400 hover:bg-gray-700' 
+                                    : 'bg-white text-purple-600 hover:bg-purple-50'
+                            }`}
+                            aria-label="Toggle dark mode"
+                        >
+                            {darkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+                        </button>
+                    </div>
+
                     {/* Header */}
-                    <div className="text-center mb-8 sm:mb-12">
+                    <div className="text-center mb-8 sm:mb-12 pt-8">
                         <div className="inline-block float mb-4">
-                            <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4 rounded-2xl shadow-2xl">
+                            <div className={`p-4 rounded-2xl shadow-2xl ${
+                                darkMode 
+                                    ? 'bg-gradient-to-r from-purple-600 to-blue-600' 
+                                    : 'bg-gradient-to-r from-purple-600 to-blue-600'
+                            }`}>
                                 <Archive className="w-12 h-12 text-white" />
                             </div>
                         </div>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-3 tracking-tight">
+                        <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-3 tracking-tight ${
+                            darkMode ? 'text-white' : 'text-white'
+                        }`}>
                             Tree<span className="text-yellow-300">Zip</span>
                         </h1>
-                        <p className="text-white text-lg sm:text-xl mb-2 font-medium">
+                        <p className={`text-lg sm:text-xl mb-2 font-medium ${
+                            darkMode ? 'text-gray-200' : 'text-white'
+                        }`}>
                             ASCII Tree → ZIP Structure Generator
                         </p>
-                        <p className="text-white/80 text-sm sm:text-base max-w-2xl mx-auto">
+                        <p className={`text-sm sm:text-base max-w-2xl mx-auto ${
+                            darkMode ? 'text-gray-400' : 'text-white/80'
+                        }`}>
                             Convert your project structure diagrams into actual file hierarchies instantly
                         </p>
                         
                         {/* Stats badges */}
                         {structure && (
                             <div className="flex justify-center gap-3 mt-6">
-                                <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
-                                    <FolderTree className="w-4 h-4 text-purple-600" />
-                                    <span className="text-sm font-semibold text-gray-700">{stats.folders} folders</span>
+                                <div className={`rounded-full px-4 py-2 flex items-center gap-2 ${
+                                    darkMode 
+                                        ? 'bg-gray-800/80 backdrop-blur-sm border border-gray-700' 
+                                        : 'glass'
+                                }`}>
+                                    <FolderTree className={`w-4 h-4 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`} />
+                                    <span className={`text-sm font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                                        {stats.folders} folders
+                                    </span>
                                 </div>
-                                <div className="glass rounded-full px-4 py-2 flex items-center gap-2">
-                                    <FileText className="w-4 h-4 text-blue-600" />
-                                    <span className="text-sm font-semibold text-gray-700">{stats.files} files</span>
+                                <div className={`rounded-full px-4 py-2 flex items-center gap-2 ${
+                                    darkMode 
+                                        ? 'bg-gray-800/80 backdrop-blur-sm border border-gray-700' 
+                                        : 'glass'
+                                }`}>
+                                    <FileText className={`w-4 h-4 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`} />
+                                    <span className={`text-sm font-semibold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                                        {stats.files} files
+                                    </span>
                                 </div>
                             </div>
                         )}
                     </div>
 
                     {/* Main Content */}
-                    <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+                    <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
                         {/* Input Section */}
-                        <div className="glass rounded-3xl shadow-2xl p-6 sm:p-8 transform hover:scale-[1.01] transition-transform">
+                        <div className={`rounded-3xl shadow-2xl p-6 sm:p-8 transform hover:scale-[1.01] transition-all ${
+                            darkMode 
+                                ? 'bg-gray-800/80 backdrop-blur-sm border border-gray-700' 
+                                : 'glass'
+                        }`}>
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl">
+                                <div className={`p-2 rounded-xl ${
+                                    darkMode 
+                                        ? 'bg-gradient-to-r from-purple-600 to-blue-600' 
+                                        : 'bg-gradient-to-r from-purple-600 to-blue-600'
+                                }`}>
                                     <Sparkles className="w-5 h-5 text-white" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-800">Input ASCII Tree</h2>
+                                <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                                    Input ASCII Tree
+                                </h2>
                             </div>
                             <textarea
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                className="w-full h-80 sm:h-96 p-4 border-2 border-purple-200 rounded-2xl font-mono text-sm focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all resize-none"
-                                placeholder="Paste your ASCII tree structure here...
+                                className={`w-full h-80 sm:h-96 p-4 rounded-2xl font-mono text-sm transition-all resize-none ${
+                                    darkMode 
+                                        ? 'bg-gray-900 border-2 border-gray-700 text-gray-200 focus:ring-4 focus:ring-purple-500 focus:border-purple-500 placeholder-gray-500' 
+                                        : 'border-2 border-purple-200 focus:ring-4 focus:ring-purple-300 focus:border-purple-400'
+                                }`}
+                                placeholder={`Paste your ASCII tree structure here...
 
 Example:
 ├── src/
 │   ├── components/
 │   │   └── Header.tsx
-│   └── App.tsx"
+│   └── App.tsx`}
                             />
                             <button
                                 onClick={generateStructure}
@@ -286,17 +376,31 @@ Example:
                         </div>
 
                         {/* Output Section */}
-                        <div className="glass rounded-3xl shadow-2xl p-6 sm:p-8 transform hover:scale-[1.01] transition-transform">
+                        <div className={`rounded-3xl shadow-2xl p-6 sm:p-8 transform hover:scale-[1.01] transition-all ${
+                            darkMode 
+                                ? 'bg-gray-800/80 backdrop-blur-sm border border-gray-700' 
+                                : 'glass'
+                        }`}>
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="p-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl">
+                                <div className={`p-2 rounded-xl ${
+                                    darkMode 
+                                        ? 'bg-gradient-to-r from-green-600 to-emerald-600' 
+                                        : 'bg-gradient-to-r from-green-600 to-emerald-600'
+                                }`}>
                                     <FolderTree className="w-5 h-5 text-white" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-800">Preview & Download</h2>
+                                <h2 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                                    Preview & Download
+                                </h2>
                             </div>
 
                             {structure ? (
                                 <>
-                                    <div className="h-80 sm:h-96 overflow-y-auto border-2 border-purple-200 rounded-2xl p-4 bg-gradient-to-br from-white to-purple-50 mb-6 hover:border-purple-300 transition-colors">
+                                    <div className={`h-80 sm:h-96 overflow-y-auto rounded-2xl p-4 mb-6 transition-all ${
+                                        darkMode 
+                                            ? 'border-2 border-gray-700 bg-gradient-to-br from-gray-900 to-purple-900/30 hover:border-purple-500' 
+                                            : 'border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50 hover:border-purple-300'
+                                    }`}>
                                         {renderTree(structure)}
                                     </div>
 
@@ -318,21 +422,29 @@ Example:
                                         )}
                                     </button>
 
-                                    <div className="mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl">
+                                    <div className={`mt-4 p-4 rounded-2xl ${
+                                        darkMode 
+                                            ? 'bg-gradient-to-r from-green-900/30 to-emerald-900/30 border-2 border-green-700' 
+                                            : 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200'
+                                    }`}>
                                         <div className="flex items-start gap-3">
                                             <div className="p-1 bg-green-600 rounded-lg mt-0.5">
                                                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                                                 </svg>
                                             </div>
-                                            <p className="text-sm text-green-800 font-medium">
+                                            <p className={`text-sm font-medium ${darkMode ? 'text-green-300' : 'text-green-800'}`}>
                                                 Ready to download! Click the button above to get your complete project structure as a ZIP file.
                                             </p>
                                         </div>
                                     </div>
                                 </>
                             ) : (
-                                <div className="h-80 sm:h-96 flex items-center justify-center text-gray-400 border-2 border-dashed border-purple-200 rounded-2xl bg-gradient-to-br from-white to-purple-50">
+                                <div className={`h-80 sm:h-96 flex items-center justify-center border-2 border-dashed rounded-2xl ${
+                                    darkMode 
+                                        ? 'border-gray-700 bg-gradient-to-br from-gray-900 to-purple-900/30 text-gray-500' 
+                                        : 'border-purple-200 bg-gradient-to-br from-white to-purple-50 text-gray-400'
+                                }`}>
                                     <div className="text-center p-8">
                                         <div className="inline-block float mb-4">
                                             <FolderTree className="w-16 h-16 mx-auto opacity-30" />
@@ -346,41 +458,84 @@ Example:
                     </div>
 
                     {/* How to Use Section */}
-                    <div className="mt-8 lg:mt-12 glass rounded-3xl shadow-2xl p-6 sm:p-8">
-                        <h3 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
+                    <div className={`mt-8 lg:mt-12 rounded-3xl shadow-2xl p-6 sm:p-8 ${
+                        darkMode 
+                            ? 'bg-gray-800/80 backdrop-blur-sm border border-gray-700' 
+                            : 'glass'
+                    }`}>
+                        <h3 className={`text-2xl font-bold mb-6 flex items-center gap-3 ${
+                            darkMode ? 'text-white' : 'text-gray-800'
+                        }`}>
                             <span className="text-3xl">🚀</span>
                             How to Use
                         </h3>
                         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="p-4 bg-gradient-to-br from-purple-50 to-white rounded-2xl border-2 border-purple-100 hover:border-purple-300 transition-all">
-                                <div className="text-2xl font-bold text-purple-600 mb-2">01</div>
-                                <h4 className="font-semibold text-gray-800 mb-1">Paste Tree</h4>
-                                <p className="text-sm text-gray-600">Copy your ASCII tree structure (folders end with /)</p>
-                            </div>
-                            <div className="p-4 bg-gradient-to-br from-blue-50 to-white rounded-2xl border-2 border-blue-100 hover:border-blue-300 transition-all">
-                                <div className="text-2xl font-bold text-blue-600 mb-2">02</div>
-                                <h4 className="font-semibold text-gray-800 mb-1">Generate</h4>
-                                <p className="text-sm text-gray-600">Click to parse and preview your structure</p>
-                            </div>
-                            <div className="p-4 bg-gradient-to-br from-green-50 to-white rounded-2xl border-2 border-green-100 hover:border-green-300 transition-all">
-                                <div className="text-2xl font-bold text-green-600 mb-2">03</div>
-                                <h4 className="font-semibold text-gray-800 mb-1">Download</h4>
-                                <p className="text-sm text-gray-600">Get your ZIP with the complete hierarchy</p>
-                            </div>
-                            <div className="p-4 bg-gradient-to-br from-yellow-50 to-white rounded-2xl border-2 border-yellow-100 hover:border-yellow-300 transition-all">
-                                <div className="text-2xl font-bold text-yellow-600 mb-2">04</div>
-                                <h4 className="font-semibold text-gray-800 mb-1">Extract & Code</h4>
-                                <p className="text-sm text-gray-600">Unzip and start building instantly!</p>
-                            </div>
+                            {[
+                                { num: '01', title: 'Paste Tree', desc: 'Copy your ASCII tree structure (folders end with /)', color: 'purple' },
+                                { num: '02', title: 'Generate', desc: 'Click to parse and preview your structure', color: 'blue' },
+                                { num: '03', title: 'Download', desc: 'Get your ZIP with the complete hierarchy', color: 'green' },
+                                { num: '04', title: 'Extract & Code', desc: 'Unzip and start building instantly!', color: 'yellow' }
+                            ].map((step, idx) => (
+                                <div key={idx} className={`p-4 rounded-2xl transition-all ${
+                                    darkMode 
+                                        ? `bg-gradient-to-br from-${step.color}-900/20 to-gray-900/20 border-2 border-${step.color}-800 hover:border-${step.color}-600` 
+                                        : `bg-gradient-to-br from-${step.color}-50 to-white border-2 border-${step.color}-100 hover:border-${step.color}-300`
+                                }`}>
+                                    <div className={`text-2xl font-bold mb-2 ${
+                                        darkMode ? `text-${step.color}-400` : `text-${step.color}-600`
+                                    }`}>{step.num}</div>
+                                    <h4 className={`font-semibold mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                                        {step.title}
+                                    </h4>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        {step.desc}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-8 text-center text-white/80 text-sm">
+                    <div className={`mt-8 text-center text-sm ${
+                        darkMode ? 'text-gray-400' : 'text-white/80'
+                    }`}>
                         <p>Made with ❤️ for developers who love automation</p>
                     </div>
                 </div>
             </div>
+
+            <style>{`
+                @keyframes gradient {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+                .gradient-bg {
+                    background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+                    background-size: 400% 400%;
+                    animation: gradient 15s ease infinite;
+                }
+                .glass {
+                    background: rgba(255, 255, 255, 0.95);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+                .glow {
+                    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+                }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0px); }
+                    50% { transform: translateY(-20px); }
+                }
+                .float {
+                    animation: float 6s ease-in-out infinite;
+                }
+                .tree-line {
+                    border-left: 2px solid;
+                    padding-left: 1rem;
+                    margin-left: 0.5rem;
+                }
+            `}</style>
         </div>
     );
 };
