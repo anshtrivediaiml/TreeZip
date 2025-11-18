@@ -84,7 +84,7 @@ const App = () => {
 │   │   │   ├── Card.tsx
 │   │   │   ├── Badge.tsx
 │   │   │   ├── Modal.tsx
-│   │   │   └── Toast.tsx
+│   │   │   └── Toast.tsx`);
 
     const [structure, setStructure] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
