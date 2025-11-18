@@ -64,27 +64,7 @@ const Moon = ({ className }) => (
 
 const App = () => {
     const [darkMode, setDarkMode] = useState(false);
-    const [input, setInput] = useState(`├── public/
-│   └── vite.svg
-├── src/
-│   ├── api/
-│   │   ├── client.ts
-│   │   ├── auth.ts
-│   │   ├── captions.ts
-│   │   ├── contentIdeas.ts
-│   │   ├── analytics.ts
-│   │   ├── scheduler.ts
-│   │   └── profile.ts
-│   ├── components/
-│   │   ├── ui/
-│   │   │   ├── Button.tsx
-│   │   │   ├── Input.tsx
-│   │   │   ├── Textarea.tsx
-│   │   │   ├── Select.tsx
-│   │   │   ├── Card.tsx
-│   │   │   ├── Badge.tsx
-│   │   │   ├── Modal.tsx
-│   │   │   └── Toast.tsx`);
+    const [input, setInput] = useState('');
 
     const [structure, setStructure] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -340,15 +320,33 @@ const App = () => {
                                 className={`w-full h-80 sm:h-96 p-4 rounded-2xl font-mono text-sm transition-all resize-none ${
                                     darkMode 
                                         ? 'bg-gray-900 border-2 border-gray-700 text-gray-200 focus:ring-4 focus:ring-purple-500 focus:border-purple-500 placeholder-gray-500' 
-                                        : 'border-2 border-purple-200 focus:ring-4 focus:ring-purple-300 focus:border-purple-400'
+                                        : 'border-2 border-purple-200 focus:ring-4 focus:ring-purple-300 focus:border-purple-400 placeholder-gray-400'
                                 }`}
-                                placeholder={`Paste your ASCII tree structure here...
-
-Example:
+                                placeholder={`├── public/
+│   └── vite.svg
 ├── src/
+│   ├── api/
+│   │   ├── client.ts
+│   │   ├── auth.ts
+│   │   └── profile.ts
 │   ├── components/
-│   │   └── Header.tsx
-│   └── App.tsx`}
+│   │   ├── ui/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── Card.tsx
+│   │   │   └── Modal.tsx
+│   │   └── layout/
+│   │       ├── Sidebar.tsx
+│   │       └── Topbar.tsx
+│   ├── context/
+│   │   └── AuthContext.tsx
+│   ├── hooks/
+│   │   └── useAuth.ts
+│   └── pages/
+│       ├── auth/
+│       │   ├── LoginPage.tsx
+│       │   └── RegisterPage.tsx
+│       └── DashboardPage.tsx`}
                             />
                             <button
                                 onClick={generateStructure}
