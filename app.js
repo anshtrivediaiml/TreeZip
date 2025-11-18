@@ -85,22 +85,6 @@ const App = () => {
 │   │   │   ├── Badge.tsx
 │   │   │   ├── Modal.tsx
 │   │   │   └── Toast.tsx
-│   │   └── layout/
-│   │       ├── Sidebar.tsx
-│   │       ├── Topbar.tsx
-│   │       └── AppLayout.tsx
-│   ├── context/
-│   │   └── AuthContext.tsx
-│   ├── hooks/
-│   │   └── useAuth.ts
-│   └── pages/
-│       ├── auth/
-│       │   ├── LoginPage.tsx
-│       │   └── RegisterPage.tsx
-│       ├── DashboardPage.tsx
-│       ├── CaptionGeneratorPage.tsx
-│       ├── ContentIdeasPage.tsx
-│       └── SchedulerPage.tsx`);
 
     const [structure, setStructure] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
